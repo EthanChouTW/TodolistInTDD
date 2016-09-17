@@ -27,8 +27,8 @@ class ItemCellTestss: XCTestCase {
             "ItemListViewController") as! ItemListViewController
         _ = controller.view
         let tableView = controller.tableView
-
-        tableView.dataSource = FakeDataSource()
+        let dataSource = FakeDataSource()
+        tableView.dataSource = dataSource
 
         let cell = tableView.dequeueReusableCellWithIdentifier("ItemCell", forIndexPath: NSIndexPath(forRow: 0, inSection: 0)) as! ItemCell
 
@@ -40,6 +40,7 @@ class ItemCellTestss: XCTestCase {
 
 extension ItemCellTestss {
     class FakeDataSource: NSObject, UITableViewDataSource {
+        weak var tableView: UITableView!
 
         func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             return 1
