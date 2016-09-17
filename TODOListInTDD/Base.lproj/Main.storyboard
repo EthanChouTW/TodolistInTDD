@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Hzz-LZ-S6u">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <scenes>
+        <!--Item List View Controller-->
+        <scene sceneID="bll-jL-eqK">
+            <objects>
+                <viewController storyboardIdentifier="ItemListViewController" id="Hzz-LZ-S6u" customClass="ItemListViewController" customModule="TODOListInTDD" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="jMF-g8-GGM"/>
+                        <viewControllerLayoutGuide type="bottom" id="hJZ-8c-90N"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="hzY-Lf-BkP">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="bdZ-6g-nIB">
+                                <rect key="frame" x="0.0" y="20" width="600" height="580"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ItemCell" id="fVr-Z3-mNx" customClass="ItemCell" customModule="TODOListInTDD" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fVr-Z3-mNx" id="PQU-8C-edZ">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eJm-5u-PBM">
+                                                    <rect key="frame" x="80" y="11" width="42" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YcO-zD-uZe">
+                                                    <rect key="frame" x="14" y="11" width="42" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="locationLabel" destination="eJm-5u-PBM" id="ojI-7k-Cz4"/>
+                                            <outlet property="titleLabel" destination="YcO-zD-uZe" id="eDh-jr-Ul7"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="bdZ-6g-nIB" secondAttribute="trailing" id="JfW-wT-hWz"/>
+                            <constraint firstItem="bdZ-6g-nIB" firstAttribute="top" secondItem="jMF-g8-GGM" secondAttribute="bottom" id="KdD-ae-os8"/>
+                            <constraint firstItem="bdZ-6g-nIB" firstAttribute="leading" secondItem="hzY-Lf-BkP" secondAttribute="leading" id="QMv-pX-KZx"/>
+                            <constraint firstItem="hJZ-8c-90N" firstAttribute="top" secondItem="bdZ-6g-nIB" secondAttribute="bottom" id="TuB-t9-Qky"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="dataProvider" destination="TPc-vL-P22" id="w0g-ZU-S9G"/>
+                        <outlet property="tableView" destination="bdZ-6g-nIB" id="4dR-u5-xYA"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aB6-CE-L1S" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <customObject id="TPc-vL-P22" customClass="ItemListDataProvider" customModule="TODOListInTDD" customModuleProvider="target"/>
+            </objects>
+            <point key="canvasLocation" x="387" y="125"/>
+        </scene>
+    </scenes>
+</document>
