@@ -12,13 +12,24 @@ import XCTest
 
 class ItemListViewControllerTests: XCTestCase {
     var sut: ItemListViewController!
-
+    var inputViewController: InputViewController!
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         sut = storyboard.instantiateViewControllerWithIdentifier("ItemListViewController") as! ItemListViewController
         _ = sut.view
+
+        //chaptor 6 put it all together
+        UIApplication.sharedApplication().keyWindow?.rootViewController = sut
+        // 確定沒被presented 過
+        XCTAssertNil(sut.presentedViewController)
+        guard let addButton = sut.navigationItem.rightBarButtonItem else
+        { XCTFail(); return }
+        sut.performSelector(addButton.action, withObject: addButton)
+        XCTAssertNotNil(sut.presentedViewController)
+        XCTAssertTrue(sut.presentedViewController is InputViewController)
+        inputViewController = sut.presentedViewController as! InputViewController
 
 
     }
@@ -29,9 +40,9 @@ class ItemListViewControllerTests: XCTestCase {
     }
     
     func test_TableViewIsNotNilAfterViewDidLoad() {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let sut = storyboard.instantiateViewControllerWithIdentifier("ItemListViewController") as! ItemListViewController
-        _ = sut.view
+//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//        let sut = storyboard.instantiateViewControllerWithIdentifier("ItemListViewController") as! ItemListViewController
+//        _ = sut.view
         XCTAssertNotNil(sut.tableView)
     }
 
@@ -49,5 +60,94 @@ class ItemListViewControllerTests: XCTestCase {
         XCTAssertEqual(sut.tableView.dataSource as? ItemListDataProvider,
                        sut.tableView.delegate as? ItemListDataProvider)
     }
+
+    // chapter6 put it all together
+    func testItemListViewController_HasAddBarButtonWithSelfAsTarget() {
+        XCTAssertEqual(sut.navigationItem.rightBarButtonItem?.target as?
+            UIViewController,
+                       sut)
+    }
+
+    func testAddItem_PresentsAddItemViewController() {
+
+
+        XCTAssertNotNil(inputViewController.titleTextField)
+    }
+
+    func testItemListVC_SharesItemManagerWithInputVC() {
+
+        guard let inputItemManager = inputViewController.itemManager else { XCTFail(); return }
+        XCTAssertTrue(sut.itemManager === inputItemManager)
+    }
+
+    // to link itemManager made to tableViewDataSource
+    func testViewDidLoad_SetsItemManagerToDataProvider() {
+        XCTAssertTrue(sut.itemManager === sut.dataProvider.itemManager)
+    }
+
+    func test_reloadedTableView() {
+
+        ///////  從這裡
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let sut = storyboard.instantiateViewControllerWithIdentifier("ItemListViewController") as! ItemListViewController
+        _ = sut.view
+        ///////  到這裡，雖然setup有寫了，但一定要加，我不知道為何.......
+
+        let mockTableView = MockTableView()
+        sut.tableView = mockTableView
+
+        sut.beginAppearanceTransition(true, animated: true)
+        sut.endAppearanceTransition()
+
+        XCTAssertTrue(mockTableView.reloadDataGotCalled)
+    }
+
+
+    func testItemSelectedNotification_PushesDetailVC() {
+
+        /////
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let sut = storyboard.instantiateViewControllerWithIdentifier("ItemListViewController") as! ItemListViewController
+        _ = sut.view
+        ///// 我也不知道為何要重新initiate，書上的方法沒這樣寫就fail
+
+        let mockNavigationController = MockNavigationController(rootViewController: sut)
+
+        UIApplication.sharedApplication().keyWindow?.rootViewController =
+        mockNavigationController
+
+    NSNotificationCenter.defaultCenter().postNotificationName("ItemSelectedNotification", object: sut.dataProvider, userInfo: ["index": 1])
+        guard let detailViewController = mockNavigationController.pushedViewController as? DetailViewController else { XCTFail(); return
+        }
+
+        guard let detailItemManager = detailViewController.itemInfo?.0
+            else { XCTFail(); return }
+        guard let index = detailViewController.itemInfo?.1 else { XCTFail(); return }
+        _ = detailViewController.view
+
+        XCTAssertNotNil(detailViewController.titleLabel)
+        XCTAssertTrue(detailItemManager === sut.itemManager)
+        XCTAssertEqual(index, 1)
+    }
     
+}
+
+extension ItemListViewControllerTests {
+
+    class MockTableView: UITableView {
+        var reloadDataGotCalled = false
+         override func reloadData() {
+            super.reloadData()
+            reloadDataGotCalled = true
+        }
+
+    }
+
+    class MockNavigationController : UINavigationController {
+        var pushedViewController: UIViewController?
+        override func pushViewController(viewController:UIViewController,animated: Bool) {
+            pushedViewController = viewController
+            super.pushViewController(viewController, animated: animated)
+        }
+    }
 }

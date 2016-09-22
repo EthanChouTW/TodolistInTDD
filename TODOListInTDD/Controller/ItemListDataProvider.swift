@@ -90,6 +90,21 @@ class ItemListDataProvider: NSObject, UITableViewDataSource, UITableViewDelegate
 
     }
 
+    // chapter6
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath
+        indexPath: NSIndexPath) {
+        guard let itemSection = Section(rawValue: indexPath.section) else
+        { fatalError() }
+        switch itemSection {
+        case .ToDo:
+            NSNotificationCenter.defaultCenter().postNotificationName(
+                "ItemSelectedNotification",
+                object: self,
+                userInfo: ["index": indexPath.row])
+        default:
+            break
+        }
+    }
 }
 
 enum Section: Int {

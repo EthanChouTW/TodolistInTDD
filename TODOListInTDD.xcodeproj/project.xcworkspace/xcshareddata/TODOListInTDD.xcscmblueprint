@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "6BE10DB1E5920A171CDF42ADA268DC00A4828FB3",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "6BE10DB1E5920A171CDF42ADA268DC00A4828FB3" : 0,
+    "CB9FA39D354036ED529F6B453CA28AE0AAD73DBA" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "05FFA0B4-4578-4A75-9755-647C28972630",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "6BE10DB1E5920A171CDF42ADA268DC00A4828FB3" : "TODOListInTDD\/",
+    "CB9FA39D354036ED529F6B453CA28AE0AAD73DBA" : ".."
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "TODOListInTDD",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "TODOListInTDD.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/pp1285\/TodolistInTDD.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "6BE10DB1E5920A171CDF42ADA268DC00A4828FB3"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:pp1285\/TipsyFinalProject.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "CB9FA39D354036ED529F6B453CA28AE0AAD73DBA"
+    }
+  ]
+}
