@@ -21,7 +21,7 @@ class ItemManager: NSObject {
             print("Something went wrong. Documents url could not be found")
                 fatalError()
         }
-        return documentURL.URLByAppendingPathComponent("toDoItems.plist")
+        return documentURL.URLByAppendingPathComponent("toDoItems.plist")!
     }
 
     var donePathURL: NSURL {
@@ -31,7 +31,7 @@ class ItemManager: NSObject {
             print("Something went wrong. Documents url could not be found")
             fatalError()
         }
-        return documentURL.URLByAppendingPathComponent("doneItems.plist")
+        return documentURL.URLByAppendingPathComponent("doneItems.plist")!
     }
 
     func addItem(item: ToDoItem) {
