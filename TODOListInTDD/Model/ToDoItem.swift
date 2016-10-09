@@ -54,8 +54,9 @@ struct ToDoItem: Equatable {
         }
     }
 
-}
 
+    
+}
 
 func ==(lhs: ToDoItem, rhs: ToDoItem) -> Bool {
     if lhs.location != rhs.location {
@@ -73,3 +74,6 @@ func ==(lhs: ToDoItem, rhs: ToDoItem) -> Bool {
 
     return true
 }
+
+
+
