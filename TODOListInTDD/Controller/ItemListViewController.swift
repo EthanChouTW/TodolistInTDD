@@ -13,8 +13,7 @@ class ItemListViewController: UIViewController {
 
     // 用ItemListDataProvider不好嗎？ 可能是比較好懂，然後中間有一層
     //P85. With this change, ItemListViewController only knows about dataProvider and that it conforms to the UITableViewDataSource protocol. This means that the two classes are decoupled from each other, and there is a de ned interface in the form of the protocol.
-    @IBOutlet var dataProvider: protocol<UITableViewDataSource,
-    UITableViewDelegate, ItemManagerSettable>!
+    @IBOutlet var dataProvider: UITableViewDataSource & UITableViewDelegate & ItemManagerSettable!
 
     let itemManager = ItemManager()
     override func viewDidLoad() {
@@ -22,10 +21,10 @@ class ItemListViewController: UIViewController {
         tableView.delegate = dataProvider
         dataProvider.itemManager = itemManager
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ItemListViewController.showDetails(_:)), name: "ItemSelectedNotification", object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ItemListViewController.showDetails(_:)), name: NSNotification.Name(rawValue: "ItemSelectedNotification"), object: nil)
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         print("itemManager to do count = \(itemManager.toDoCount)")
         print("itemManager to do count = \(itemManager.doneCount)")
@@ -34,18 +33,18 @@ class ItemListViewController: UIViewController {
 
     }
 
-    @IBAction func addItem(sender: UIBarButtonItem) {
-        if let nextViewController = storyboard?.instantiateViewControllerWithIdentifier("InputViewController") as? InputViewController {
+    @IBAction func addItem(_ sender: UIBarButtonItem) {
+        if let nextViewController = storyboard?.instantiateViewController(withIdentifier: "InputViewController") as? InputViewController {
             nextViewController.itemManager = itemManager
-            presentViewController(nextViewController, animated: true,
+            present(nextViewController, animated: true,
                                   completion: nil)
         }
     }
 
-    func showDetails(sender: NSNotification) {
-        guard let index = sender.userInfo?["index"] as? Int else
+    func showDetails(_ sender: Notification) {
+        guard let index = (sender as NSNotification).userInfo?["index"] as? Int else
         { fatalError() }
-        if let nextViewController = storyboard?.instantiateViewControllerWithIdentifier("DetailViewController") as? DetailViewController {
+        if let nextViewController = storyboard?.instantiateViewController(withIdentifier: "DetailViewController") as? DetailViewController {
             nextViewController.itemInfo = (itemManager, index)
             navigationController?.pushViewController(nextViewController, animated: true)
         }

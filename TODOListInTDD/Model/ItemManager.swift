@@ -11,48 +11,48 @@ import UIKit
 class ItemManager: NSObject {
     var toDoCount: Int { return toDoItems.count}
     var doneCount: Int { return doneItems.count}
-    private var toDoItems = [ToDoItem]()
-    private var doneItems = [ToDoItem]()
+    fileprivate var toDoItems = [ToDoItem]()
+    fileprivate var doneItems = [ToDoItem]()
 
-    var toDoPathURL: NSURL {
-        let fileURLs = NSFileManager.defaultManager().URLsForDirectory(
-            .DocumentDirectory, inDomains: .UserDomainMask)
+    var toDoPathURL: URL {
+        let fileURLs = FileManager.default.urls(
+            for: .documentDirectory, in: .userDomainMask)
         guard let documentURL = fileURLs.first else {
             print("Something went wrong. Documents url could not be found")
                 fatalError()
         }
-        return documentURL.URLByAppendingPathComponent("toDoItems.plist")!
+        return documentURL.appendingPathComponent("toDoItems.plist")
     }
 
-    var donePathURL: NSURL {
-        let fileURLs = NSFileManager.defaultManager().URLsForDirectory(
-            .DocumentDirectory, inDomains: .UserDomainMask)
+    var donePathURL: URL {
+        let fileURLs = FileManager.default.urls(
+            for: .documentDirectory, in: .userDomainMask)
         guard let documentURL = fileURLs.first else {
             print("Something went wrong. Documents url could not be found")
             fatalError()
         }
-        return documentURL.URLByAppendingPathComponent("doneItems.plist")!
+        return documentURL.appendingPathComponent("doneItems.plist")
     }
 
-    func addItem(item: ToDoItem) {
+    func addItem(_ item: ToDoItem) {
 
         if !toDoItems.contains(item) {
             toDoItems.append(item)
         }
     }
 
-    func itemAtIndex(index: Int) -> ToDoItem {
+    func itemAtIndex(_ index: Int) -> ToDoItem {
 
         return  toDoItems[index]
     }
 
-    func checkItemAtIndex(index: Int) {
+    func checkItemAtIndex(_ index: Int) {
         
-        let item = toDoItems.removeAtIndex(index)
+        let item = toDoItems.remove(at: index)
         doneItems.append(item)
     }
 
-    func doneItemAtIndex(index: Int) -> ToDoItem {
+    func doneItemAtIndex(_ index: Int) -> ToDoItem {
         return doneItems[index]
     }
 
@@ -61,8 +61,8 @@ class ItemManager: NSObject {
         doneItems.removeAll()
     }
 
-    func uncheckItemAtIndex(index: Int) {
-        let item = doneItems.removeAtIndex(index)
+    func uncheckItemAtIndex(_ index: Int) {
+        let item = doneItems.remove(at: index)
         toDoItems.append(item)
     }
 
@@ -73,11 +73,11 @@ class ItemManager: NSObject {
             nsToDoItems.append(item.plistDict)
         }
         if nsToDoItems.count > 0 {
-            (nsToDoItems as NSArray).writeToURL(toDoPathURL,
+            (nsToDoItems as NSArray).write(to: toDoPathURL,
                                                 atomically: true)
         } else {
             do {
-                try NSFileManager.defaultManager().removeItemAtURL(toDoPathURL)
+                try FileManager.default.removeItem(at: toDoPathURL)
             } catch {
                 print(error)
             }
@@ -90,11 +90,11 @@ class ItemManager: NSObject {
         }
 
         if nsDoneItems.count > 0 {
-            (nsDoneItems as NSArray).writeToURL(donePathURL,
+            (nsDoneItems as NSArray).write(to: donePathURL,
                                                 atomically: true)
         } else {
             do {
-                try NSFileManager.defaultManager().removeItemAtURL(donePathURL)
+                try FileManager.default.removeItem(at: donePathURL)
             } catch {
                 print(error)
             }
@@ -104,14 +104,14 @@ class ItemManager: NSObject {
 
     override init() {
         super.init()
-        NSNotificationCenter.defaultCenter().addObserver(
+        NotificationCenter.default.addObserver(
             self,
             selector: #selector(ItemManager.save),
-            name: UIApplicationWillResignActiveNotification,
+            name: NSNotification.Name.UIApplicationWillResignActive,
             object: nil)
 
         // get todoItem
-        if let nsToDoItems = NSArray(contentsOfURL: toDoPathURL) {
+        if let nsToDoItems = NSArray(contentsOf: toDoPathURL) {
             for dict in nsToDoItems {
                 if let toDoItem = ToDoItem(dict: dict as! NSDictionary) {
                     toDoItems.append(toDoItem)
@@ -121,7 +121,7 @@ class ItemManager: NSObject {
         }
 
         // get doneItem
-        if let nsDoneItems = NSArray(contentsOfURL: donePathURL) {
+        if let nsDoneItems = NSArray(contentsOf: donePathURL) {
             for dict in nsDoneItems {
                 if let doneItem = ToDoItem(dict: dict as! NSDictionary) {
                     doneItems.append(doneItem)
@@ -133,7 +133,7 @@ class ItemManager: NSObject {
     }
 
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
         save()
     }
 

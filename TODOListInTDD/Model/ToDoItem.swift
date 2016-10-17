@@ -13,25 +13,25 @@ struct ToDoItem: Equatable {
     let itemDescription: String?
     let timestamp: Double?
     let location: Location?
-    private let titleKey = "titleKey"
-    private let itemDescriptionKey = "itemDescriptionKey"
-    private let timestampKey = "timestampKey"
-    private let locationKey = "locationKey"
+    fileprivate let titleKey = "titleKey"
+    fileprivate let itemDescriptionKey = "itemDescriptionKey"
+    fileprivate let timestampKey = "timestampKey"
+    fileprivate let locationKey = "locationKey"
 
     var plistDict: NSDictionary {
         var dict = [String:AnyObject]()
-        dict[titleKey] = title
+        dict[titleKey] = title as AnyObject?
         if let itemDescription = itemDescription {
-            dict[itemDescriptionKey] = itemDescription
+            dict[itemDescriptionKey] = itemDescription as AnyObject?
         }
         if let timestamp = timestamp {
-            dict[timestampKey] = timestamp
+            dict[timestampKey] = timestamp as AnyObject?
         }
         if let location = location {
             let locationDict = location.plistDict
             dict[locationKey] = locationDict
         }
-        return dict
+        return dict as NSDictionary
     }
 
     init(title: String, itemDescription: String? = nil, timestamp: Double? = nil, location: Location? = nil) {

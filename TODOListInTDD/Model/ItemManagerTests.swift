@@ -119,7 +119,7 @@ class ItemManagerTests: XCTestCase {
 
     }
 
-    func performNotEqualTestWithLocationProperties(firstName: String, secondName: String, firstLongLat: (Double, Double)?, secondLongLat: (Double, Double)?, line: UInt =  #line ) {
+    func performNotEqualTestWithLocationProperties(_ firstName: String, secondName: String, firstLongLat: (Double, Double)?, secondLongLat: (Double, Double)?, line: UInt =  #line ) {
 
         let firstCoord: CLLocationCoordinate2D?
         if let firstLongLat = firstLongLat {
@@ -231,8 +231,8 @@ class ItemManagerTests: XCTestCase {
         itemManager!.addItem(firstItem)
         let secondItem = ToDoItem(title: "Second")
         itemManager!.addItem(secondItem)
-        NSNotificationCenter.defaultCenter().postNotificationName(
-            UIApplicationWillResignActiveNotification, object: nil)
+        NotificationCenter.default.post(
+            name: NSNotification.Name.UIApplicationWillResignActive, object: nil)
         itemManager = nil
         XCTAssertNil(itemManager)
         itemManager = ItemManager()
@@ -248,8 +248,8 @@ class ItemManagerTests: XCTestCase {
         let secondItem = ToDoItem(title: "Second")
         itemManager!.addItem(secondItem)
         itemManager!.checkItemAtIndex(0)
-        NSNotificationCenter.defaultCenter().postNotificationName(
-            UIApplicationWillResignActiveNotification, object: nil)
+        NotificationCenter.default.post(
+            name: NSNotification.Name.UIApplicationWillResignActive, object: nil)
         itemManager = nil
         XCTAssertNil(itemManager)
         itemManager = ItemManager()

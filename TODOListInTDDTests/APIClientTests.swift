@@ -30,7 +30,7 @@ class APIClientTests: XCTestCase {
 
     func testLogin_MakesRequestWithUsernameAndPassword() {
 
-        let completion = { (error: ErrorType?) in }
+        let completion = { (error: Error?) in }
 
         // 這裡的username 跟password有奇怪符號 ，string轉成NSURL會fail
         sut.loginUserWithName("dasdöm",
@@ -38,18 +38,18 @@ class APIClientTests: XCTestCase {
                               completion: completion)
         XCTAssertNotNil(mockURLSession.completionHandler)
         guard let url = mockURLSession.url else { XCTFail(); return }
-        let urlComponents = NSURLComponents(URL: url,
+        let urlComponents = URLComponents(url: url,
                                             resolvingAgainstBaseURL: true)
         XCTAssertEqual(urlComponents?.host, "awesometodos.com")
            XCTAssertEqual(urlComponents?.path, "/login")
 
        // 改成編碼，避免url後面的param會因為使用者帳號密碼有&%#@符號而出現傳錯param的問題
-        let allowedCharacters = NSCharacterSet(charactersInString: "/%&=?$#+-~@<>|\\*,.()[]{}^!").invertedSet
-        guard let expectedUsername = "dasdöm".stringByAddingPercentEncodingWithAllowedCharacters(allowedCharacters)
+        let allowedCharacters = CharacterSet(charactersIn: "/%&=?$#+-~@<>|\\*,.()[]{}^!").inverted
+        guard let expectedUsername = "dasdöm".addingPercentEncoding(withAllowedCharacters: allowedCharacters)
         else {
             fatalError()
         }
-        guard let expectedPassword = "%&34".stringByAddingPercentEncodingWithAllowedCharacters(allowedCharacters)
+        guard let expectedPassword = "%&34".addingPercentEncoding(withAllowedCharacters: allowedCharacters)
         else {
             fatalError()
         }
@@ -59,7 +59,7 @@ class APIClientTests: XCTestCase {
 
     func testLogin_CallsResumeOfDataTask() {
         
-        let completion = { (error: ErrorType?) in }
+        let completion = { (error: Error?) in }
         sut.loginUserWithName("dasdom",
                               password: "1234",
                               completion: completion)
@@ -69,34 +69,34 @@ class APIClientTests: XCTestCase {
     func testLogin_SetsToken() {
         let mockKeychainManager = MockKeychainManager()
         sut.keychainManager = mockKeychainManager
-        let completion = { (error: ErrorType?) in }
+        let completion = { (error: Error?) in }
         sut.loginUserWithName("dasdom",
                               password: "1234",
                               completion: completion)
         let responseDict = ["token" : "1234567890"]
-        let responseData = try! NSJSONSerialization.dataWithJSONObject(responseDict, options: [])
+        let responseData = try! JSONSerialization.data(withJSONObject: responseDict, options: [])
         mockURLSession.completionHandler?(responseData, nil, nil)
         let token = mockKeychainManager.passwordForAccount("token")
         XCTAssertEqual(token, responseDict["token"])
     }
 
     func testLogin_ThrowsErrorWhenJSONIsInvalid() {
-        var theError: ErrorType?
-        let completion = { (error: ErrorType?) in
+        var theError: Error?
+        let completion = { (error: Error?) in
             theError = error
         }
         sut.loginUserWithName("dasdom",
                               password: "1234",
                               completion: completion)
         //丟一個空的data進去拿到token, theError的error不會是nil了
-        let responseData = NSData()
+        let responseData = Data()
         mockURLSession.completionHandler?(responseData, nil, nil)
         XCTAssertNotNil(theError)
     }
 
     func testLogin_ThrowsErrorWhenDataIsNil() {
-        var theError: ErrorType?
-        let completion = { (error: ErrorType?) in
+        var theError: Error?
+        let completion = { (error: Error?) in
             theError = error
         }
         sut.loginUserWithName("dasdom",
@@ -108,15 +108,15 @@ class APIClientTests: XCTestCase {
 
     // 處理server回傳的error
     func testLogin_ThrowsErrorWhenResponseHasError() {
-        var theError: ErrorType?
-        let completion = { (error: ErrorType?) in
+        var theError: Error?
+        let completion = { (error: Error?) in
             theError = error
         }
         sut.loginUserWithName("dasdom",
                               password: "1234",
                               completion: completion)
         let responseDict = ["token" : "1234567890"]
-        let responseData = try! NSJSONSerialization.dataWithJSONObject(responseDict,
+        let responseData = try! JSONSerialization.data(withJSONObject: responseDict,
             options: [])
         let error = NSError(domain: "SomeError", code:
             1234, userInfo: nil)
@@ -129,22 +129,22 @@ class APIClientTests: XCTestCase {
 
 extension APIClientTests {
     class MockURLSession :ToDoURLSession {
-        typealias Handler = (NSData!, NSURLResponse!, NSError!)
+        typealias Handler = (Data?, URLResponse?, NSError?)
             -> Void
         var completionHandler: Handler?
-        var url: NSURL?
+        var url: URL?
         var dataTask = MockURLSessionDataTask()
-         func dataTaskWithURL(url: NSURL,
-                             completionHandler: (NSData?, NSURLResponse?, NSError?) -> Void) -> NSURLSessionDataTask {
+        
+
+        func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
             self.url = url
             self.completionHandler = completionHandler
             return dataTask
-
         }
     }
 
     // 用resume處理上面session吐出來的NSURLSessionDataTask
-    class MockURLSessionDataTask : NSURLSessionDataTask {
+    class MockURLSessionDataTask : URLSessionDataTask {
         var resumeGotCalled = false
         override func resume() {
             resumeGotCalled = true
@@ -153,14 +153,14 @@ extension APIClientTests {
 
     class MockKeychainManager : KeychainAccessible {
         var passwordDict = [String:String]()
-        func setPassword(password: String,
+        func setPassword(_ password: String,
                          account: String) {
             passwordDict[account] = password
         }
-        func deletePasswortForAccount(account: String) {
-            passwordDict.removeValueForKey(account)
+        func deletePasswortForAccount(_ account: String) {
+            passwordDict.removeValue(forKey: account)
         }
-        func passwordForAccount(account: String) -> String? {
+        func passwordForAccount(_ account: String) -> String? {
             return passwordDict[account]
         }
     }

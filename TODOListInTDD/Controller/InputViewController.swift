@@ -8,6 +8,26 @@
 
 import UIKit
 import CoreLocation
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 class InputViewController: UIViewController {
 
@@ -20,19 +40,19 @@ class InputViewController: UIViewController {
     lazy var geocoder = CLGeocoder()
     var itemManager: ItemManager?
 
-    let dateFormatter: NSDateFormatter = {
-        let dateFormatter = NSDateFormatter()
+    let dateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MM/dd/yyyy"
         return dateFormatter
     }()
 
      @IBAction func save() {
         guard let titleString = titleTextField.text
-            where titleString.characters.count > 0 else { return }
-        let date: NSDate?
+            , titleString.characters.count > 0 else { return }
+        let date: Date?
         if let dateText = self.dateTextField.text
-            where dateText.characters.count > 0 {
-            date = dateFormatter.dateFromString(dateText)
+            , dateText.characters.count > 0 {
+            date = dateFormatter.date(from: dateText)
         } else {
             date = nil
         }
@@ -43,9 +63,9 @@ class InputViewController: UIViewController {
             descriptionString = nil
         }
         if let locationName = locationTextField.text
-            where locationName.characters.count > 0 {
+            , locationName.characters.count > 0 {
             if let address = addressTextField.text
-                where address.characters.count > 0 {
+                , address.characters.count > 0 {
                 geocoder.geocodeAddressString(address) {
                     [unowned self] (placeMarks, error) -> Void in
                     let placeMark = placeMarks?.first
@@ -54,10 +74,10 @@ class InputViewController: UIViewController {
                                         timestamp: date?.timeIntervalSince1970,
                                         location: Location(name: locationName,
                                             coordinate: placeMark?.location?.coordinate))
-                    dispatch_async(dispatch_get_main_queue(), {
+                    DispatchQueue.main.async(execute: {
                         () -> Void in
                         self.itemManager?.addItem(item)
-                        self.dismissViewControllerAnimated(true, completion: nil)
+                        self.dismiss(animated: true, completion: nil)
                     })
 
                 }
@@ -65,13 +85,13 @@ class InputViewController: UIViewController {
             } else {
                 let item = ToDoItem(title: titleString, itemDescription: descriptionString, timestamp: date?.timeIntervalSince1970, location: Location(name: locationName))
                 self.itemManager?.addItem(item)
-                 dismissViewControllerAnimated(true, completion: nil)
+                 dismiss(animated: true, completion: nil)
             }
             //多加的，書上沒寫
         } else {
             let item = ToDoItem(title: titleString, itemDescription: descriptionString, timestamp: date?.timeIntervalSince1970, location: nil)
             self.itemManager?.addItem(item)
-            dismissViewControllerAnimated(true, completion: nil)
+            dismiss(animated: true, completion: nil)
         }
 
     }

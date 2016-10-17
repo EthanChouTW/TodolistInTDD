@@ -10,9 +10,9 @@ import Foundation
 
 protocol KeychainAccessible {
 
-    func setPassword(password: String,
+    func setPassword(_ password: String,
                      account: String)
-    func deletePasswortForAccount(account: String)
-    func passwordForAccount(account: String) -> String?
+    func deletePasswortForAccount(_ account: String)
+    func passwordForAccount(_ account: String) -> String?
 
 }

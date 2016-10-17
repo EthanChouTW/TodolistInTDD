@@ -19,8 +19,8 @@ class ItemCellTestss: XCTestCase {
     override func setUp() {
         super.setUp()
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let controller = storyboard.instantiateViewControllerWithIdentifier(
-            "ItemListViewController") as! ItemListViewController
+        let controller = storyboard.instantiateViewController(
+            withIdentifier: "ItemListViewController") as! ItemListViewController
         _ = controller.view
         tableView = controller.tableView
          // 要生成instance才能做source
@@ -38,27 +38,27 @@ class ItemCellTestss: XCTestCase {
     func testSUT_HasNameLabel() {
 
 
-        let cell = tableView.dequeueReusableCellWithIdentifier("ItemCell", forIndexPath: NSIndexPath(forRow: 0, inSection: 0)) as! ItemCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell", for: IndexPath(row: 0, section: 0)) as! ItemCell
 
         XCTAssertNotNil(cell.titleLabel)
     }
 
     func testSUT_HasLocationLabel() {
 
-        let cell = tableView.dequeueReusableCellWithIdentifier("ItemCell",forIndexPath: NSIndexPath(forRow: 0, inSection: 0)) as! ItemCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell",for: IndexPath(row: 0, section: 0)) as! ItemCell
         XCTAssertNotNil(cell.locationLabel)
     }
 
     func testSUT_HasDescriptionLabel() {
 
-        let cell = tableView.dequeueReusableCellWithIdentifier("ItemCell",forIndexPath: NSIndexPath(forRow: 0, inSection: 0)) as! ItemCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell",for: IndexPath(row: 0, section: 0)) as! ItemCell
         XCTAssertNotNil(cell.dateLabel)
     }
 
     func testConfigWithItem_SetsLabelTexts() {
-        let cell = tableView.dequeueReusableCellWithIdentifier(
-            "ItemCell",
-            forIndexPath: NSIndexPath(forRow: 0, inSection: 0)) as!
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: "ItemCell",
+            for: IndexPath(row: 0, section: 0)) as!
         ItemCell
         cell.configCellWithItem(ToDoItem(title: "First", itemDescription:
             nil, timestamp: 1456150025, location: Location(name: "Home")))
@@ -68,8 +68,8 @@ class ItemCellTestss: XCTestCase {
     }
 
     func testTitle_ForCheckedTasks_IsStrokeThrough() {
-        let cell = tableView.dequeueReusableCellWithIdentifier(
-            "ItemCell",forIndexPath: NSIndexPath(forRow: 0, inSection: 0)) as! ItemCell
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: "ItemCell",for: IndexPath(row: 0, section: 0)) as! ItemCell
         let toDoItem = ToDoItem(title: "First",
                                 itemDescription: nil,
                                 timestamp: 1456150025,
@@ -77,7 +77,7 @@ class ItemCellTestss: XCTestCase {
         cell.configCellWithItem(toDoItem, checked: true)
         let attributedString = NSAttributedString(string: "First",
                                                   attributes: [NSStrikethroughStyleAttributeName:
-                                                    NSUnderlineStyle.StyleSingle.rawValue])
+                                                    NSUnderlineStyle.styleSingle.rawValue])
         XCTAssertEqual(cell.titleLabel.attributedText, attributedString)
         XCTAssertNil(cell.locationLabel.text)
         XCTAssertNil(cell.dateLabel.text)
@@ -91,11 +91,11 @@ extension ItemCellTestss {
     class FakeDataSource: NSObject, UITableViewDataSource {
 
 
-        func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             return 1
         }
 
-        func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
                 return UITableViewCell()
         }

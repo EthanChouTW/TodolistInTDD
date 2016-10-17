@@ -9,32 +9,32 @@
 import Foundation
 
 class APIClient {
-    lazy var session: ToDoURLSession = NSURLSession.sharedSession()
+    lazy var session: ToDoURLSession = URLSession.shared
     var keychainManager: KeychainAccessible?
-    func loginUserWithName(username: String,
+    func loginUserWithName(_ username: String,
                            password: String,
-                           completion: (ErrorType?) -> Void) {
-        let allowedCharacters = NSCharacterSet(charactersInString: "/%&=?$#+-~@<>|\\*,.()[]{}^!").invertedSet
-        guard let encodedUsername = username.stringByAddingPercentEncodingWithAllowedCharacters(allowedCharacters)
+                           completion: (@escaping (Error?) -> Void)) {
+        let allowedCharacters = CharacterSet(charactersIn: "/%&=?$#+-~@<>|\\*,.()[]{}^!").inverted
+        guard let encodedUsername = username.addingPercentEncoding(withAllowedCharacters: allowedCharacters)
             else {
                 fatalError()
         }
-        guard let encodedPassword = password.stringByAddingPercentEncodingWithAllowedCharacters(allowedCharacters)
+        guard let encodedPassword = password.addingPercentEncoding(withAllowedCharacters: allowedCharacters)
             else {
                 fatalError()
         }
-        guard let url = NSURL(string: "https://awesometodos.com/login?username=\(encodedUsername)&password=\(encodedPassword)") else
+        guard let url = URL(string: "https://awesometodos.com/login?username=\(encodedUsername)&password=\(encodedPassword)") else
         { fatalError() }
-        let task = session.dataTaskWithURL(url) { (data, response, error) -> Void in
+        let task = session.dataTask(with: url) { (data, response, error) in
 
             if error != nil {
-                completion(WebserviceError.ResponseError)
+                completion(WebserviceError.responseError)
                 return
             }
 
             if let theData = data {
                 do {
-                    let responseDict = try NSJSONSerialization.JSONObjectWithData(theData, options: [])
+                    let responseDict = try JSONSerialization.jsonObject(with: theData, options: []) as! [String:AnyObject]
                     let token = responseDict["token"] as! String
                     self.keychainManager?.setPassword(token,
                                                       account: "token")
@@ -43,7 +43,7 @@ class APIClient {
                 }
             }  else {
                 // if data == nil
-                completion(WebserviceError.DataEmptyError)
+                completion(WebserviceError.dataEmptyError)
             }
         }
         task.resume()
@@ -52,15 +52,16 @@ class APIClient {
 
 }
 
-enum WebserviceError : ErrorType {
-    case DataEmptyError
-    case ResponseError
+enum WebserviceError : Error {
+    case dataEmptyError
+    case responseError
 }
 
 protocol ToDoURLSession {
-    func dataTaskWithURL(url: NSURL,
-                         completionHandler: (NSData?, NSURLResponse?, NSError?) ->
-        Void) -> NSURLSessionDataTask
+
+    func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Swift.Void) -> URLSessionDataTask
 }
 
-extension NSURLSession : ToDoURLSession { }
+extension URLSession : ToDoURLSession {
+
+ }

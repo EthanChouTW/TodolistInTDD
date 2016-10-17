@@ -17,16 +17,16 @@ class ItemListViewControllerTests: XCTestCase {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        sut = storyboard.instantiateViewControllerWithIdentifier("ItemListViewController") as! ItemListViewController
+        sut = storyboard.instantiateViewController(withIdentifier: "ItemListViewController") as! ItemListViewController
         _ = sut.view
 
         //chaptor 6 put it all together
-        UIApplication.sharedApplication().keyWindow?.rootViewController = sut
+        UIApplication.shared.keyWindow?.rootViewController = sut
         // 確定沒被presented 過
         XCTAssertNil(sut.presentedViewController)
         guard let addButton = sut.navigationItem.rightBarButtonItem else
         { XCTFail(); return }
-        sut.performSelector(addButton.action, withObject: addButton)
+        sut.perform(addButton.action, with: addButton)
         XCTAssertNotNil(sut.presentedViewController)
         XCTAssertTrue(sut.presentedViewController is InputViewController)
         inputViewController = sut.presentedViewController as! InputViewController
@@ -89,7 +89,7 @@ class ItemListViewControllerTests: XCTestCase {
 
         ///////  從這裡
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let sut = storyboard.instantiateViewControllerWithIdentifier("ItemListViewController") as! ItemListViewController
+        let sut = storyboard.instantiateViewController(withIdentifier: "ItemListViewController") as! ItemListViewController
         _ = sut.view
         ///////  到這裡，雖然setup有寫了，但一定要加，我不知道為何.......
 
@@ -107,16 +107,16 @@ class ItemListViewControllerTests: XCTestCase {
 
         /////
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let sut = storyboard.instantiateViewControllerWithIdentifier("ItemListViewController") as! ItemListViewController
+        let sut = storyboard.instantiateViewController(withIdentifier: "ItemListViewController") as! ItemListViewController
         _ = sut.view
         ///// 我也不知道為何要重新initiate，書上的方法沒這樣寫就fail
 
         let mockNavigationController = MockNavigationController(rootViewController: sut)
 
-        UIApplication.sharedApplication().keyWindow?.rootViewController =
+        UIApplication.shared.keyWindow?.rootViewController =
         mockNavigationController
 
-    NSNotificationCenter.defaultCenter().postNotificationName("ItemSelectedNotification", object: sut.dataProvider, userInfo: ["index": 1])
+    NotificationCenter.default.post(name: Notification.Name(rawValue: "ItemSelectedNotification"), object: sut.dataProvider, userInfo: ["index": 1])
         guard let detailViewController = mockNavigationController.pushedViewController as? DetailViewController else { XCTFail(); return
         }
 
@@ -145,7 +145,7 @@ extension ItemListViewControllerTests {
 
     class MockNavigationController : UINavigationController {
         var pushedViewController: UIViewController?
-        override func pushViewController(viewController:UIViewController,animated: Bool) {
+        override func pushViewController(_ viewController:UIViewController,animated: Bool) {
             pushedViewController = viewController
             super.pushViewController(viewController, animated: animated)
         }

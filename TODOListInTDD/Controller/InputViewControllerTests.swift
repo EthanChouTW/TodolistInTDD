@@ -19,7 +19,7 @@ class InputViewControllerTests: XCTestCase {
 
         let storyboard = UIStoryboard(name: "Main",
                                       bundle: nil)
-        sut = storyboard.instantiateViewControllerWithIdentifier("InputViewController") as! InputViewController
+        sut = storyboard.instantiateViewController(withIdentifier: "InputViewController") as! InputViewController
         _ = sut.view
 
     }
@@ -55,7 +55,7 @@ class InputViewControllerTests: XCTestCase {
         let mockGeocoder = MockGeocoder()
         mockInputViewController.geocoder = mockGeocoder
         mockInputViewController.itemManager = ItemManager()
-        let expectation = expectationWithDescription("bla")
+        let expectation = self.expectation(description: "bla")
         mockInputViewController.completionHandler = {
             expectation.fulfill()
         }
@@ -66,7 +66,7 @@ class InputViewControllerTests: XCTestCase {
         let coordinate = CLLocationCoordinate2DMake(37.3316851, -122.0300674)
         placemark.mockCoordinate = coordinate
         mockGeocoder.completionHandler?([placemark], nil)
-        waitForExpectationsWithTimeout(1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
 
         let item = mockInputViewController.itemManager?.itemAtIndex(0)
 
@@ -81,13 +81,13 @@ class InputViewControllerTests: XCTestCase {
 
     func test_SaveButtonHasSaveAction() {
         let saveButton: UIButton = sut.saveButton
-        guard let actions = saveButton.actionsForTarget(sut, forControlEvent: .TouchUpInside) else { XCTFail(); return }
+        guard let actions = saveButton.actions(forTarget: sut, forControlEvent: .touchUpInside) else { XCTFail(); return }
         XCTAssertTrue(actions.contains("save"))
     }
 
     // chapt5 networking
     func test_GeocoderWorksAsExpected() {
-        let expectation = expectationWithDescription("Wait for geocode")
+        let expectation = self.expectation(description: "Wait for geocode")
         CLGeocoder().geocodeAddressString("Infinite Loop 1, Cupertino") {
             (placemarks, error) -> Void in
             let placemark = placemarks?.first
@@ -105,7 +105,7 @@ class InputViewControllerTests: XCTestCase {
                                        accuracy: 0.000001)
             expectation.fulfill()
         }
-        waitForExpectationsWithTimeout(3, handler: nil)
+        waitForExpectations(timeout: 3, handler: nil)
     }
 
     func testSave_DismissesViewController() {
@@ -130,7 +130,7 @@ extension InputViewControllerTests {
     // we call it stub
     class MockGeocoder: CLGeocoder {
         var completionHandler: CLGeocodeCompletionHandler?
-        override func geocodeAddressString(addressString: String, completionHandler: CLGeocodeCompletionHandler) {
+        override func geocodeAddressString(_ addressString: String, completionHandler: @escaping CLGeocodeCompletionHandler) {
             self.completionHandler = completionHandler
         }
     }
@@ -149,7 +149,7 @@ extension InputViewControllerTests {
     class MockInputViewController : InputViewController {
         var dismissGotCalled = false
         var completionHandler: (() -> Void)?
-        override func dismissViewControllerAnimated(flag: Bool,
+        override func dismiss(animated flag: Bool,
                                                     completion: (() -> Void)?) {
             dismissGotCalled = true
             completionHandler?()
