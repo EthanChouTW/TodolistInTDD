@@ -50,9 +50,9 @@ class TODOListInTDDUITests: XCTestCase {
             descriptionTextField.typeText("Bring iPad")
             app.buttons["Save"].tap()
         
-            //        XCTAssertTrue(app.tables.staticTexts["Meeting"].exists)
-            //        XCTAssertTrue(app.tables.staticTexts["02/22/2016"].exists)
-            //        XCTAssertTrue(app.tables.staticTexts["Office"].exists)
+                    XCTAssertTrue(app.tables.staticTexts["Meeting"].exists)
+                    XCTAssertTrue(app.tables.staticTexts["02/22/2016"].exists)
+                    XCTAssertTrue(app.tables.staticTexts["Office"].exists)
 
 
     }

@@ -64,15 +64,16 @@ class ItemListViewControllerTests: XCTestCase {
     // chapter6 put it all together
     func testItemListViewController_HasAddBarButtonWithSelfAsTarget() {
         XCTAssertEqual(sut.navigationItem.rightBarButtonItem?.target as?
-            UIViewController,
-                       sut)
+            UIViewController, sut)
     }
 
     func testAddItem_PresentsAddItemViewController() {
 
-
         XCTAssertNotNil(inputViewController.titleTextField)
     }
+
+
+
 
     func testItemListVC_SharesItemManagerWithInputVC() {
 
@@ -128,8 +129,10 @@ class ItemListViewControllerTests: XCTestCase {
         XCTAssertNotNil(detailViewController.titleLabel)
         XCTAssertTrue(detailItemManager === sut.itemManager)
         XCTAssertEqual(index, 1)
+
+
     }
-    
+
 }
 
 extension ItemListViewControllerTests {

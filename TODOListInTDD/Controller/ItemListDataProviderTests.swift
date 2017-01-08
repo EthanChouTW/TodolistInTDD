@@ -29,12 +29,13 @@ class ItemListDataProviderTests: XCTestCase {
             tableView.delegate = sut
 
     }
-    
+    // ItemListDataProviderTests
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
         sut.itemManager?.removeAllItems()
         sut.itemManager = nil
+        super.tearDown()
+
 
     }
 

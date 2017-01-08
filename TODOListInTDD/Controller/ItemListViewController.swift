@@ -16,6 +16,7 @@ class ItemListViewController: UIViewController {
     @IBOutlet var dataProvider: UITableViewDataSource & UITableViewDelegate & ItemManagerSettable!
 
     let itemManager = ItemManager()
+
     override func viewDidLoad() {
         tableView.dataSource = dataProvider
         tableView.delegate = dataProvider
@@ -37,9 +38,11 @@ class ItemListViewController: UIViewController {
         if let nextViewController = storyboard?.instantiateViewController(withIdentifier: "InputViewController") as? InputViewController {
             nextViewController.itemManager = itemManager
             present(nextViewController, animated: true,
-                                  completion: nil)
+                    completion: nil)
         }
     }
+
+
 
     func showDetails(_ sender: Notification) {
         guard let index = (sender as NSNotification).userInfo?["index"] as? Int else

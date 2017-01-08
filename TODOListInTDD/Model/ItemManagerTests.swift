@@ -21,9 +21,9 @@ class ItemManagerTests: XCTestCase {
 
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
         sut.removeAllItems()
         sut = nil
+        super.tearDown()
     }
 
     func testToDoCount_Initially_ShouldBeZero() {

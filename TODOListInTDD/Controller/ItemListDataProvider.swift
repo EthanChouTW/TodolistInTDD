@@ -91,8 +91,7 @@ class ItemListDataProvider: NSObject, UITableViewDataSource, UITableViewDelegate
     }
 
     // chapter6
-    func tableView(_ tableView: UITableView, didSelectRowAt
-        indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let itemSection = Section(rawValue: (indexPath as NSIndexPath).section) else
         { fatalError() }
         switch itemSection {

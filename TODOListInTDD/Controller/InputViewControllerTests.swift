@@ -149,8 +149,7 @@ extension InputViewControllerTests {
     class MockInputViewController : InputViewController {
         var dismissGotCalled = false
         var completionHandler: (() -> Void)?
-        override func dismiss(animated flag: Bool,
-                                                    completion: (() -> Void)?) {
+        override func dismiss(animated flag: Bool, completion: (() -> Void)?) {
             dismissGotCalled = true
             completionHandler?()
         } }
